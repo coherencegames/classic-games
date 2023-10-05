@@ -3,11 +3,11 @@ import { BrowserModule } from '@angular/platform-browser';
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
-import { GameComponent } from './core/components/game/game.component';
+import { PacmanModule } from './pacman/pacman.module';
 
 @NgModule({
-  declarations: [AppComponent, GameComponent],
-  imports: [BrowserModule, AppRoutingModule],
+  declarations: [AppComponent],
+  imports: [BrowserModule, AppRoutingModule, PacmanModule],
   providers: [],
   bootstrap: [AppComponent],
 })
