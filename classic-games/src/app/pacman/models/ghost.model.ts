@@ -1,3 +1,3 @@
-export class GhostModel {
-  // Implement ghost properties
-}
+import { Actor } from './actor.model';
+
+export interface Ghost extends Actor {}

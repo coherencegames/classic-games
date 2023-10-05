@@ -1,3 +1,3 @@
-export class DotModel {
-  // Implement dot properties
-}
+import { Actor } from './actor.model';
+
+export interface Dot extends Actor {}

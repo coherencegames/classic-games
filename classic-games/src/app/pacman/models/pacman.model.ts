@@ -1,3 +1,4 @@
-export class PacmanModel {
-  // Implement pacman properties
+import { Actor } from './actor.model';
+
+export interface Pacman extends Actor {
 }
