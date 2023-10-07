@@ -1,15 +1,17 @@
 import { Injectable } from '@angular/core';
 import * as PIXI from 'pixi.js';
 
+import { Constants } from '../core/constants';
 import { Pacman } from '../models/pacman.model';
 import { Dot } from '../models/dot.model';
 import { Ghost } from '../models/ghost.model';
+import { MazeService } from './maze.service';
 
 @Injectable({
   providedIn: 'root',
 })
 export class GameService {
-  // Implement all needed methods for game logic
+  constructor(private mazeService: MazeService) {}
 
   createPacman(): Pacman {
     let pacman: Pacman = {
@@ -19,8 +21,8 @@ export class GameService {
     };
 
     // Resize
-    pacman.sprite.width = 40;
-    pacman.sprite.height = 40;
+    pacman.sprite.width = Constants.PACMAN_SPRITE_WIDTH;
+    pacman.sprite.height = Constants.PACMAN_SPRITE_HEIGHT;
 
     pacman.sprite.x = pacman.x;
     pacman.sprite.y = pacman.y;
@@ -29,40 +31,48 @@ export class GameService {
   }
 
   createDots(): Dot[] {
-    let dots: Dot[] = [
-      { x: 50, y: 50, sprite: PIXI.Sprite.from('assets/images/dot.png') },
-      { x: 100, y: 50, sprite: PIXI.Sprite.from('assets/images/dot.png') },
-      { x: 150, y: 50, sprite: PIXI.Sprite.from('assets/images/dot.png') },
-      // Add more dot positions
-    ];
+    let validCoordinates = this.mazeService.getDotsValidCoordinates();
+    let dots: Dot[] = [];
 
-    for (let dot of dots) {
+    for (let coordinates of validCoordinates) {
+      let dot: Dot = {
+        x: coordinates.x,
+        y: coordinates.y,
+        sprite: PIXI.Sprite.from('assets/images/dot.png'),
+      };
+
       // Resize
-      dot.sprite.width = 20;
-      dot.sprite.height = 20;
+      dot.sprite.width = Constants.DOT_SPRITE_WIDTH;
+      dot.sprite.height = Constants.DOT_SPRITE_HEIGHT;
 
       dot.sprite.x = dot.x;
       dot.sprite.y = dot.y;
+
+      dots.push(dot);
     }
 
     return dots;
   }
 
   createGhosts(): Ghost[] {
-    let ghosts: Ghost[] = [
-      { x: 200, y: 200, sprite: PIXI.Sprite.from('assets/images/ghost.png') },
-      { x: 250, y: 200, sprite: PIXI.Sprite.from('assets/images/ghost.png') },
-      { x: 300, y: 200, sprite: PIXI.Sprite.from('assets/images/ghost.png') },
-      // Add more ghost positions here
-    ];
+    let validCoordinates = this.mazeService.getGhostsValidCoordinates();
+    let ghosts: Ghost[] = [];
 
-    for (let ghost of ghosts) {
+    for (let coordinates of validCoordinates) {
+      let ghost: Ghost = {
+        x: coordinates.x,
+        y: coordinates.y,
+        sprite: PIXI.Sprite.from('assets/images/ghost.png'),
+      };
+
       // Resize
-      ghost.sprite.width = 40;
-      ghost.sprite.height = 40;
+      ghost.sprite.width = Constants.GHOST_SPRITE_WIDTH;
+      ghost.sprite.height = Constants.GHOST_SPRITE_HEIGHT;
 
       ghost.sprite.x = ghost.x;
       ghost.sprite.y = ghost.y;
+
+      ghosts.push(ghost);
     }
 
     return ghosts;
