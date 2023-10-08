@@ -1,4 +1,10 @@
-import { Component, OnInit, OnDestroy, NgZone } from '@angular/core';
+import {
+  Component,
+  OnInit,
+  OnDestroy,
+  NgZone,
+  HostListener,
+} from '@angular/core';
 import * as PIXI from 'pixi.js';
 
 import { Constants } from '../core/constants';
@@ -14,7 +20,8 @@ import { MazeService } from '../services/maze.service';
 export class GameBoardComponent implements OnInit, OnDestroy {
   private app: any;
   private game: Game = new Game();
-  private keysState: { [key: string]: boolean } = {};
+  private keyState: { [key: string]: boolean } = {};
+  private direction: string = '';
 
   constructor(
     private ngZone: NgZone,
@@ -35,13 +42,20 @@ export class GameBoardComponent implements OnInit, OnDestroy {
       this.createPacman();
       this.createDots();
       this.createGhosts();
-    });
 
-    // Start game loop - create methods for move pacman, handle input, update game
+      this.app.ticker.add(() => {
+        this.handleInput();
+        this.movePacman();
+        this.updateGame();
+      });
+    });
   }
 
   createPacman(): void {
     this.game.pacman = this.gameService.createPacman();
+    this.game.pacman.sprite.x = Constants.GAME_WIDTH / 2;
+    this.game.pacman.sprite.y = Constants.GAME_HEIGHT / 2;
+
     this.app.stage.addChild(this.game.pacman?.sprite);
   }
 
@@ -69,7 +83,45 @@ export class GameBoardComponent implements OnInit, OnDestroy {
     }
   }
 
-  // Create host listeners
+  private updateGame(): void {}
+
+  private movePacman(): void {
+    if (this.game.pacman) {
+      let result = this.gameService.movePacman(
+        this.game.pacman.sprite.x,
+        this.game.pacman.sprite.y,
+        this.direction
+      );
+      
+      this.game.pacman.sprite.x = result.x;
+      this.game.pacman.sprite.y = result.y;
+    }
+  }
+
+  private handleInput(): void {
+    if (this.keyState['ArrowUp']) {
+      this.direction = Constants.PACMAN_DIRECTION_UP;
+    }
+    if (this.keyState['ArrowDown']) {
+      this.direction = Constants.PACMAN_DIRECTION_DOWN;
+    }
+    if (this.keyState['ArrowLeft']) {
+      this.direction = Constants.PACMAN_DIRECTION_LEFT;
+    }
+    if (this.keyState['ArrowRight']) {
+      this.direction = Constants.PACMAN_DIRECTION_RIGHT;
+    }
+  }
+
+  @HostListener('document:keydown', ['$event'])
+  onKeyDown(event: KeyboardEvent): void {
+    this.keyState[event.key] = true;
+  }
+
+  @HostListener('document:keyup', ['$event'])
+  onKeyUp(event: KeyboardEvent): void {
+    this.keyState[event.key] = false;
+  }
 
   ngOnDestroy(): void {
     this.app.destroy();

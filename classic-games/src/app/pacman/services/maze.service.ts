@@ -23,8 +23,8 @@ export class MazeService {
     [1, 0, 0, 1, 1, 0, 0, 2, 2, 1, 0, 0, 0, 0, 0, 1],
     [1, 0, 0, 1, 0, 1, 2, 1, 1, 1, 1, 1, 1, 0, 0, 1],
     [1, 1, 1, 1, 1, 1, 0, 1, 0, 0, 0, 0, 0, 0, 0, 1],
-    [1, 0, 0, 0, 0, 0, 0, 1, 0, 1, 1, 1, 1, 1, 0, 1],
-    [1, 0, 1, 1, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1],
+    [1, 0, 0, 0, 0, 0, 1, 1, 0, 1, 1, 1, 1, 1, 0, 1],
+    [1, 0, 1, 1, 0, 1, 1, 0, 0, 1, 0, 0, 0, 1, 0, 1],
     [1, 0, 0, 1, 0, 0, 1, 1, 1, 1, 0, 0, 0, 1, 0, 1],
     [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
   ];
@@ -43,7 +43,7 @@ export class MazeService {
 
     for (let row = 0; row < this.mazeGrid.length; row++) {
       for (let col = 0; col < this.mazeGrid[row].length; col++) {
-        let isWall = !this.mazeGrid[row][col];
+        let isWall = this.mazeGrid[row][col] === 0;
         let cellSprite = new PIXI.Sprite(PIXI.Texture.WHITE);
 
         cellSprite.width = cellWidth;
@@ -101,5 +101,30 @@ export class MazeService {
     }
 
     return ghostsCoordinates;
+  }
+  
+  isPath(row: number, col: number): boolean {
+    if (
+      row >= 0 &&
+      row < this.mazeGrid.length &&
+      col >= 0 &&
+      col < this.mazeGrid[0].length
+    ) {
+      return this.mazeGrid[row][col] === 1;
+    }
+    return false;
+  }
+
+  isWall(row: number, col: number): boolean {
+    if (
+      row >= 0 &&
+      row < this.mazeGrid.length &&
+      col >= 0 &&
+      col < this.mazeGrid[0].length
+    ) {
+      return this.mazeGrid[row][col] === 0;
+    }
+
+    return true;
   }
 }
